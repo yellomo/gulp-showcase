@@ -92,7 +92,7 @@ npm会将依赖都安装到node_modules 文件夹中，```将node_modules 添加
 require('./gulpfiles/_init_');
 ```
 
-init会根据showcase下的base 模版，生成相应的js、handlebars、view和gulpjs 文件，那么在命令行输入
+init会根据showcase下的base 模版，生成相应的js、handlebars、view和gulpjs 文件，在命令行输入
 
 ```shell
 $ gulp init --name user
