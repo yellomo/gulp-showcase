@@ -67,10 +67,10 @@ $ npm install gulp -g
 
 ######   gulp-showcase
 gulp-showcase 相比于上面的工程结构，多了```package.json、gulpfiles文件夹和 gulpfile.js文件```，
-```package.json```定义了开发时所依赖模块，```gulpfiles```负责来管理每个页面工程的gulp-[app].js文件，
-```gulpfile.js```文件 相当于gulp的main方法，当运行gulp命令时，就会加载gulpfile.js文件，并运行相应的命令。
+package.json定义了开发时所依赖模块，gulpfiles负责来管理每个页面工程的gulp-[app].js文件，
+gulpfile.js文件 相当于gulp的main方法，当运行gulp命令时，就会加载gulpfile.js文件，并运行相应的命令。
 
-gulp-showcase里包含了一个base模版工程，用来简化操作。加入了```ini任务和vendor任务```，分别用来初始化新的页面工程和合并js库。
+gulp-showcase里包含了一个base模版工程，用来简化操作。加入了```init任务和vendor任务```，分别用来初始化新的页面工程和合并js库。
 
 ######   根据gulp-showcase的base模版，创建一个user页面工程
 * 下载gulp-showcase工程。并安装开发所依赖的模块
