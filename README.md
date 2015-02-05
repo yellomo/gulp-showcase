@@ -65,82 +65,119 @@ $ npm install gulp -g
 ```
 
 
-######  下载 gulp-showcase
-gulp-showcase 相比于上面的工程结构，多了package.json、gulpfiles文件夹和 gulpfile.js文件，
-package.json定义了开发时所依赖模块，gulpfiles负责来管理每个页面工程的gulp-[app].js文件，
-gulpfile.js文件 相当于gulp的main方法，当运行gulp命令时，就会加载gulpfile.js文件，并运行相应的命令。
+######   gulp-showcase
+gulp-showcase 相比于上面的工程结构，多了```package.json、gulpfiles文件夹和 gulpfile.js文件```，
+```package.json```定义了开发时所依赖模块，```gulpfiles```负责来管理每个页面工程的gulp-[app].js文件，
+```gulpfile.js```文件 相当于gulp的main方法，当运行gulp命令时，就会加载gulpfile.js文件，并运行相应的命令。
 
-gulp-showcase里包含了一个base模版工程，用来简化操作。
-在showcase目录下,只需要执行
+gulp-showcase里包含了一个base模版工程，用来简化操作。加入了```ini任务和vendor任务```，分别用来初始化新的页面工程和合并js库。
+
+######   根据gulp-showcase的base模版，创建一个user页面工程
+* 下载gulp-showcase工程。并安装开发所依赖的模块
 
 ```shell
+ $ git clone git@github.com:yellomo/gulp-showcase.git gulp-user-example
+ $ cd gulp-user-example/
  $ npm install
 ```
 
-就会将依赖，都安装到node_modules 文件夹中，```将node_modules 添加至svnignore 或 gitignore中```；不加入版本控制，并且推荐去掉eclipse的js验证，否则每次build工程，验证js会花费很多时间。
+npm会将依赖都安装到node_modules 文件夹中，```将node_modules 添加至svnignore 或 gitignore中```,不加入版本控制，并且推荐去掉eclipse的js验证，否则每次build工程，验证js会花费很多时间。
 
-######  新建gulpfiles.js
-在showcase根目录下新建一个gulpfiles.js文件，```添加至svnignore 或 gitignore中```,
-并引入init配置文件，
+在根目录下新建一个gulpfiles.js文件，因为gulpfiles.js主要是本地自己开发时使用，通常只加载当前开发页面的配置文件，所以推荐也加入```添加至svnignore 或 gitignore中```。
 
-```
+
+* 引入init配置文件，并创建user工程
+
+```js
 require('./gulpfiles/_init_');
 ```
-init会根据showcase下的base 模版，生成相应的js、handlebars、view和gulpjs 文件，例如在新建一个user页面，那么在命令行输入
+
+init会根据showcase下的base 模版，生成相应的js、handlebars、view和gulpjs 文件，那么在命令行输入
 
 ```shell
 $ gulp init --name user
 ```
 
-生成：
+将生成：
 
 ```
 showcase:
   css:
   fonts:
   js:
-    user:	
+    user:							// 在js文件夹中生存user模块
     	modules:
-    		user-init.js			//create user-init.js
+    		user-init.js			//生成 user-init.js
     	templates:
-    		user-init.hbs			//create user-init.hbs
+    		user-init.hbs			//生成 user-init.hbs
   views: 
-	user.html						//create user.html
+	user.html						//创建 user.html
   gulpfiles:
-  	gulp-user.js					//create gulp-user.js
+  	gulp-user.js					//创建 gulp-user.js
 
 ```
-不输入 ```--name user``` 会以默认的app为名称，生成上面的文件
+不输入 ```--name user``` 会以默认的app为名称，生成上面的文件。
+
+在浏览器中打开user.html，控制台输出了'"hello world"，就说明user页面工程创建成功了，
 
 
+* 引人gulp-[app].js 配置文件，使用 watch-[app] 和 build-[app]
 
-######  引人gulp-[app].js 配置文件
-每个页面的gulp 配置文件都放到gulpfiles目录下进行管理，例如上面user.html 的 gulp配置文件，就命名为gulp-app.js,
-使用时，就在gulpfile.js中引入 gulp-user.js就可以了，
+为了监控user页面工程中，js和handlebars模版的变化，需要使用watch-[app]的任务。
+
+在gulpfile.js中引入gulp-user.js
 
 ```js
 require('./gulpfiles/gulp-user');
 ```
 
-之后就可以运行 watch-user 命令，监控js和模版的编码，开发完成后，运行build-user，压缩js文件
+运行watch-user
+
+```shell
+$ gulp watch-user
+```
+
+终端打印出
 
 ```
-$gulp watch-user   监控js和hbs模版
-$gulp build-user   压缩js和模版
+[02:49:28] Using gulpfile ~/.../gulpfile.js
+[02:49:28] Starting 'watch-user'...
+[02:49:28] Finished 'watch-user' after 7.89 ms
+```
+
+说明 watch-user 任务启动成功，这时新增，修改user模块下的modules和templates，watch-user就会监控变化，生成新的main.js 和 templates.js.
+
+例如修改user－init.js --> console.log("hello-world,111");
+修改 user-init.hbs --> <p>hello world,123</p>;
+
+watch－user 会分别调用concat-user和templates-user两个子任务，生成新的js
+
+```
+[02:54:04] Starting 'concat-user'...
+[02:54:04] Finished 'concat-user' after 9.07 ms
+[02:54:19] Starting 'templates-user'...
+[02:54:19] Finished 'templates-user' after 21 ms
+```
+
+刷新页面，控制台就会打印出 ： hello-world,111。
+
+
+开发完成后，运行build-user，压缩js文件
+
+```
+$gulp watch-[app]   监控js和hbs模版
+$gulp build-[app]   压缩js和模版
 ```
 
 
 
 #### 4.相关阅读
-minimist:parse argument options		https://github.com/substack/minimist;https://github.com/gulpjs/gulp/blob/master/docs/recipes/pass-arguments-from-cli.md
-
-gulp-rename:		https://www.npmjs.com/package/gulp-rename
-
-gulp-template:		https://www.npmjs.com/package/gulp-template
-
-gulp synchronous-tasks: http://schickling.me/synchronous-tasks-gulp/
-
-gulp inject:	https://www.npmjs.com/package/gulp-inject
-
+* minimist:parse argument options		https://github.com/substack/minimist;https://github.com/gulpjs/gulp/blob/master/docs/recipes/pass-arguments-from-cli.md
+* gulp-rename:		https://www.npmjs.com/package/gulp-rename
+* gulp-template:		https://www.npmjs.com/package/gulp-template
+* gulp synchronous-tasks: http://schickling.me/synchronous-tasks-gulp/
+* gulp inject:	https://www.npmjs.com/package/gulp-inject
+* handlebars: http://handlebarsjs.com
+* gulp handlebars: https://github.com/lazd/gulp-handlebars/blob/master/README.md
 
 
