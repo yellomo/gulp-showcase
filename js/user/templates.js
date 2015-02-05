@@ -1,1 +1,0 @@
-!function(){var e=Handlebars.template,a=Handlebars.templates=Handlebars.templates||{};a["user-init"]=e({compiler:[6,">= 2.0.0-beta.1"],main:function(){return"<p>hello world</p>\n<p>hello jianping</p>"},useData:!0})}();
