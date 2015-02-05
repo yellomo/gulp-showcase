@@ -1,5 +1,5 @@
 {
-  "dependencies": {
+  "devDependencies": {
     "gulp": "~3.8.10",
     "gulp-handlebars": "~3.0.1",
     "gulp-concat": "~2.4.3",

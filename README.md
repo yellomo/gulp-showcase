@@ -1,6 +1,5 @@
 # gulp-showcase
 使用gulp来管理前端程序
-***
 
 #### 1.简介
 ***
@@ -13,41 +12,72 @@ public:
   css:
   fonts:
   js:
-    user:	
-    	modules:
-    		user-init.js
-    		user-search.js
-    		user-create.js
-    		user-delete.js
-    		user-edit.js
-    	templates:
-    		user-edit.hbs
-    		user-list.hbs
-    	main.js
-    	templates.js
-    	venfor.js
-    vendor:
-    	jquery.js
-    	handlebars.runtime.js
-    	helper.js
+    user.js	
   views: 
-	user.html
-	product.html
+	  user.html
 ```
-为了方便管理和维护，设置一些基本的约定，以user为例。user包含基本的增删改查的功能。
+为了方便管理和维护，设置一些基本的约定，
 
-在views中创建user.html的页面，
+在js中创建一个vendor文件夹，包含jquery，handlebars等通用的js库，页面自己的js文件，也按照不同的功能，分割成不同的js文件放入到相应的文件夹中管理起来。
+
+
+以user为例。user包含基本的增删改查的功能。并且有大量的动态模版。按照约定整理的目录结构就变成
+
+```
+public:
+  css:
+  fonts:
+  js:
+    user:                     -- user.html 对应的js程序目录
+      modules:                -- user js模块目录，按照功能，将js分成不同的文件，管理起来
+        user-init.js
+        user-search.js
+        user-create.js
+        user-delete.js
+        user-edit.js
+      templates:              -- user template 目录，
+        user-edit.hbs
+        user-list.hbs
+      main.js                 -- 将user module 中的js，合并成 main.js
+      templates.js            -- 对js模版 预编译，合并成templates.js
+    vendor:                   -- js类库，
+      jquery.js
+      handlebars.runtime.js
+      helper.js
+    vendor.js                 -- 合并vendor 目录下的js库
+  views: 
+  user.html                   -- user.html 依此引入vendor.js, tempalte.js, main.js
+```
+下面的小节，展示如何用gulp来创建和管理，如上约定的程序。
 #### 3.使用gulp管理前端程序
 
 ######  安装nodejs 和 npm
-######  在showcase中执行npm install 安装相关依赖
-在showcase目录下，package.json定义了gulp运行的时需要的依赖,只需要执行
+参照文档安装nodejs和npm
 
+nodejs:http://nodejs.org/
+
+npm:https://www.npmjs.com/
+
+安装完成之后，执行如下命令，在全局安装gulp
+
+```shell
+$ npm install gulp -g
 ```
- npm install
+
+
+######  下载 gulp-showcase
+gulp-showcase 相比于上面的工程结构，多了package.json、gulpfiles文件夹和 gulpfile.js文件，
+package.json定义了开发时所依赖模块，gulpfiles负责来管理每个页面工程的gulp-[app].js文件，
+gulpfile.js文件 相当于gulp的main方法，当运行gulp命令时，就会加载gulpfile.js文件，并运行相应的命令。
+
+gulp-showcase里包含了一个base模版工程，用来简化操作。
+在showcase目录下,只需要执行
+
+```shell
+ $ npm install
 ```
-就会安装进所需要的依赖，
-安装依赖后，showcase目录中会多出一个node_modules 文件夹，```将node_modules 添加至svnignore 或 gitignore中```；node_modules里面包含了具体的node模块，无需关心。
+
+就会将依赖，都安装到node_modules 文件夹中，```将node_modules 添加至svnignore 或 gitignore中```；不加入版本控制，并且推荐去掉eclipse的js验证，否则每次build工程，验证js会花费很多时间。
 
 ######  新建gulpfiles.js
 在showcase根目录下新建一个gulpfiles.js文件，```添加至svnignore 或 gitignore中```,
